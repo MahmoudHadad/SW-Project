@@ -1,0 +1,78 @@
+create database SAMA;
+use SAMA;
+
+CREATE TABLE `user` (
+  `id` INTEGER PRIMARY KEY AUTO_INCREMENT,
+  `name` VARCHAR(255) NOT NULL,
+  `email` VARCHAR(255) UNIQUE NOT NULL,
+  `password` VARCHAR(255) NOT NULL,
+  `facebook` VARCHAR(255) NOT NULL
+);
+
+CREATE TABLE `ad` (
+  `id` INTEGER PRIMARY KEY AUTO_INCREMENT,
+  `title` LONGTEXT NOT NULL,
+  `image` VARCHAR(255) NOT NULL,
+  `description` LONGTEXT NOT NULL,
+  `note` LONGTEXT NOT NULL,
+  `user` INTEGER NOT NULL
+);
+
+CREATE INDEX `idx_ad__user` ON `ad` (`user`);
+
+ALTER TABLE `ad` ADD CONSTRAINT `fk_ad__user` FOREIGN KEY (`user`) REFERENCES `user` (`id`);
+
+CREATE TABLE `adlist` (
+  `id` INTEGER PRIMARY KEY AUTO_INCREMENT,
+  `name` VARCHAR(255) NOT NULL,
+  `user` INTEGER NOT NULL
+);
+
+CREATE INDEX `idx_adlist__user` ON `adlist` (`user`);
+
+ALTER TABLE `adlist` ADD CONSTRAINT `fk_adlist__user` FOREIGN KEY (`user`) REFERENCES `user` (`id`);
+
+CREATE TABLE `ad_adlist` (
+  `ad` INTEGER NOT NULL,
+  `adlist` INTEGER NOT NULL,
+  PRIMARY KEY (`ad`, `adlist`)
+);
+
+CREATE INDEX `idx_ad_adlist` ON `ad_adlist` (`adlist`);
+
+ALTER TABLE `ad_adlist` ADD CONSTRAINT `fk_ad_adlist__ad` FOREIGN KEY (`ad`) REFERENCES `ad` (`id`);
+
+ALTER TABLE `ad_adlist` ADD CONSTRAINT `fk_ad_adlist__adlist` FOREIGN KEY (`adlist`) REFERENCES `adlist` (`id`);
+
+CREATE TABLE `car` (
+  `color` VARCHAR(255) NOT NULL,
+  `speed` INTEGER NOT NULL,
+  `km` INTEGER NOT NULL,
+  `model` INTEGER NOT NULL,
+  `price` INTEGER NOT NULL,
+  `subcategory` INTEGER NOT NULL,
+  `a_d` INTEGER PRIMARY KEY
+);
+
+ALTER TABLE `car` ADD CONSTRAINT `fk_car__a_d` FOREIGN KEY (`a_d`) REFERENCES `ad` (`id`);
+
+CREATE TABLE `home` (
+  `price` DOUBLE NOT NULL,
+  `area` LONGTEXT NOT NULL,
+  `address` LONGTEXT NOT NULL,
+  `numberofrooms` INTEGER NOT NULL,
+  `numberoftiolets` INTEGER NOT NULL,
+  `a_d` INTEGER PRIMARY KEY
+);
+
+ALTER TABLE `home` ADD CONSTRAINT `fk_home__a_d` FOREIGN KEY (`a_d`) REFERENCES `ad` (`id`);
+
+CREATE TABLE `jopoffer` (
+  `salary` DOUBLE NOT NULL,
+  `yearofexperiance` DOUBLE NOT NULL,
+  `joptype` VARCHAR(255) NOT NULL,
+  `subcategory` INTEGER NOT NULL,
+  `a_d` INTEGER PRIMARY KEY
+);
+
+ALTER TABLE `jopoffer` ADD CONSTRAINT `fk_jopoffer__a_d` FOREIGN KEY (`a_d`) REFERENCES `ad` (`id`)
